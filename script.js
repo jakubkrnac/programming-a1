@@ -16,40 +16,60 @@
 *
 */
 
-const state = {
-    lastMovement: 0
+let state = {
+    timeOfLastEvent: 0
 }
 
 const settings = Object.freeze({
     skipEvents: 30,
     wave: {
-        size: 100,
+        size: 100
     },
+    liquid: {
+        viscosity: 1 // the bigger the viscosity, the slower will the waves travel
+    }
 });
+
+/**
+* Update the state object with the properties included in `newState`.
+* @param {number} timeOfEvent An object with the properties to update in the state object.
+*/
+function updateState(timeOfEvent) {
+    state = Object.freeze({
+        timeOfLastEvent: timeOfEvent
+    });
+}
 
 let eventCounter = 0;
 
 /**
  * @param {PointerEvent} event An object with the properties to update in the state object.
  */
-function handlePointerEvents(event) {
-
-    state.lastMovement = new Date().getTime();
-
+function handlePointerEvent(event) {
     if (eventCounter <= settings.skipEvents) {
         eventCounter++;
     } else {
-        let element = document.createElement('div');
-        element.style.left = event.x + 'px';
-        element.style.top = event.y + 'px';
-        document.body.append(element);
+        const {viscosity} = settings.liquid;
+        let wave = document.createElement('div');
+        wave.style.left = event.x + 'px';
+        wave.style.top = event.y + 'px';
+        wave.style.transition = getWaveTransition(viscosity);
+        document.body.append(wave);
 
         setTimeout(function () {
-            element.classList.add('expand');
+            wave.classList.add('expand');
         }, 0);
+        //wave.classList.add('expand');
 
         eventCounter = 0;
     }
+}
+
+function getWaveTransition(viscosity) {
+    return (viscosity * 2) + 's ease-out';
+}
+function getWaveTravelTimeMillis(viscosity) {
+    return viscosity * 2 * 1000;
 }
 
 /**
@@ -57,11 +77,10 @@ function handlePointerEvents(event) {
  * loop() is run every frame, assuming that we keep calling it with `window.requestAnimationFrame`.
  */
 function loop() {
+    const { timeOfLastEvent } = state;
+    const { viscosity } = settings.liquid;
 
-    if ((new Date().getTime() - 5000) > state.lastMovement) {
-//        for (const waveNode of document.body.childNodes) {
-//            document.body.removeChild(waveNode);
-//        }
+    if ((new Date().getTime() - getWaveTravelTimeMillis(viscosity)) > timeOfLastEvent) {
         document.body.innerHTML = ''; //clear our body
     }
 
@@ -73,7 +92,8 @@ function loop() {
  */
 function setup() {
     document.addEventListener('pointermove', function (event) {
-        handlePointerEvents(event);
+        updateState(new Date().getTime());
+        handlePointerEvent(event);
     });
 
     loop();

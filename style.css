@@ -17,7 +17,6 @@ div {
     border: 1px solid #0075fa;
     width: 10px;
     height: 10px;
-    transition: 2s ease-out;
     transform: scale(1);
     filter: blur(1px);
 }
