@@ -16,26 +16,40 @@
 *
 */
 
-// The state should contain all the 'moving' parts of your program, values that change.
-let state = Object.freeze({
-    pointerEvent: {x: 0, y: 0},
-});
+const state = {
+    lastMovement: 0
+}
 
-// The settings should contain all of the 'fixed' parts of your programs, like static HTMLElements and paramaters.
 const settings = Object.freeze({
-    skipFrames: 30,
+    skipEvents: 30,
     wave: {
         size: 100,
-        spawPosition: {x: 0, y: 0}
     },
 });
 
+let eventCounter = 0;
+
 /**
- * Update the state object with the properties included in `newState`.
- * @param {Object} newState An object with the properties to update in the state object.
+ * @param {PointerEvent} event An object with the properties to update in the state object.
  */
-function updateState(newState) {
-    //
+function handlePointerEvents(event) {
+
+    state.lastMovement = new Date().getTime();
+
+    if (eventCounter <= settings.skipEvents) {
+        eventCounter++;
+    } else {
+        let element = document.createElement('div');
+        element.style.left = event.x + 'px';
+        element.style.top = event.y + 'px';
+        document.body.append(element);
+
+        setTimeout(function () {
+            element.classList.add('expand');
+        }, 0);
+
+        eventCounter = 0;
+    }
 }
 
 /**
@@ -43,13 +57,12 @@ function updateState(newState) {
  * loop() is run every frame, assuming that we keep calling it with `window.requestAnimationFrame`.
  */
 function loop() {
-    const {pointerEvent} = state;
-    const {wave} = settings;
 
-    //TODO delete the old waves
-
-    for (const wave of document.body.childNodes) {
-        console.log(window.getComputedStyle(wave));
+    if ((new Date().getTime() - 5000) > state.lastMovement) {
+//        for (const waveNode of document.body.childNodes) {
+//            document.body.removeChild(waveNode);
+//        }
+        document.body.innerHTML = ''; //clear our body
     }
 
     window.requestAnimationFrame(loop);
@@ -59,24 +72,8 @@ function loop() {
  * Setup is run once, at the start of the program. It sets everything up for us!
  */
 function setup() {
-    let frameCounter = 0;
-
     document.addEventListener('pointermove', function (event) {
-        if (frameCounter <= settings.skipFrames) {
-            frameCounter++;
-        } else {
-            //updateState({pointerEvent: event});
-            frameCounter = 0;
-
-            let element = document.createElement('div');
-            element.style.left = event.x + 'px';
-            element.style.top = event.y + 'px';
-            document.body.append(element);
-
-            setTimeout(function () {
-                element.classList.add('expand');
-                }, 1);
-        }
+        handlePointerEvents(event);
     });
 
     loop();
