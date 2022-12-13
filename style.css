@@ -7,18 +7,19 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #35363a;
+/*    background-color: #35363a;*/
 }
 
 div {
     position: fixed;
     border-radius: 100%;
-    opacity: 0.5;
-    background-color: #00a0fc;
+    opacity: 1;
+    border: 1px solid #0075fa;
     width: 10px;
     height: 10px;
     transition: 2s ease-out;
     transform: scale(1);
+    filter: blur(1px);
 }
 
 .expand {
