@@ -23,9 +23,10 @@ let state = {
 const settings = Object.freeze({
     skipEvents: 30,
     wave: {
-        size: 100
+        color: '#0075fa'
     },
     liquid: {
+        color: '#ffffff',
         viscosity: 1 // the bigger the viscosity, the slower will the waves travel
     }
 });
@@ -50,9 +51,11 @@ function handlePointerEvent(event) {
         eventCounter++;
     } else {
         const {viscosity} = settings.liquid;
+        const {color} = settings.wave;
         let wave = document.createElement('div');
         wave.style.left = event.x + 'px';
         wave.style.top = event.y + 'px';
+        wave.style.border = '1px solid ' + color;
         wave.style.transition = getWaveTransition(viscosity);
         document.body.append(wave);
 
@@ -91,6 +94,9 @@ function loop() {
  * Setup is run once, at the start of the program. It sets everything up for us!
  */
 function setup() {
+    const {color} = settings.liquid;
+
+    document.body.style.backgroundColor = color;
     document.addEventListener('pointermove', function (event) {
         updateState(new Date().getTime());
         handlePointerEvent(event);

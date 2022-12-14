@@ -7,14 +7,12 @@
 body {
     margin: 0;
     padding: 0;
-/*    background-color: #35363a;*/
 }
 
 div {
     position: fixed;
     border-radius: 100%;
     opacity: 1;
-    border: 1px solid #0075fa;
     width: 10px;
     height: 10px;
     transform: scale(1);
