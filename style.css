@@ -12,14 +12,14 @@ body {
 div {
     position: fixed;
     border-radius: 100%;
-    opacity: 1;
+    opacity: 1; /*we have to set initial and end value in order for the transition to work*/
     width: 10px;
     height: 10px;
-    transform: scale(1);
+    transform: scale(1); /*we have to set initial and end value in order for the transition to work*/
     filter: blur(1px);
 }
 
 .expand {
-    transform: scale(100);
-    opacity: 0;
+    transform: scale(100); /*we have to set initial and end value in order for the transition to work*/
+    opacity: 0; /*we have to set initial and end value in order for the transition to work*/
 }
